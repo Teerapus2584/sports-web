@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Panel - Sports Results</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{--purple:#6d28d9; --muted:#f3f0ff;}
+    body{font-family:"Prompt",sans-serif;margin:0;background:var(--muted);color:#111}
+    header{background:var(--purple); color:#fff; padding:18px 22px; display:flex; justify-content:space-between; align-items:center;}
+    header h1{margin:0;font-size:18px;}
+
+    .wrap{display:flex; gap:20px; padding:24px; max-width:1200px; margin:auto;}
+    .sidebar{width:360px; background:#fff; padding:18px; border-radius:14px; box-shadow:0 6px 20px rgba(0,0,0,0.08);}
+    .main{flex:1; background:#fff; padding:18px; border-radius:14px; box-shadow:0 6px 20px rgba(0,0,0,0.08);}
+
+    label{display:block;margin-top:12px;font-size:14px;color:#333}
+    input, select{
+      width:100%; padding:11px; margin-top:6px;
+      border-radius:10px; border:1px solid #ddd; font-size:14px;
+    }
+
+    button{padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+    .btn-add{background:#059669;color:#fff;width:100%; margin-top:16px;font-weight:600}
+
+    table{width:100%; border-collapse:collapse; margin-top:10px}
+    th,td{padding:12px;border-bottom:1px solid #eee;font-size:14px;vertical-align:middle}
+    th{background:#fafafa}
+
+    .team-cell{display:flex;align-items:center;gap:8px}
+    .logo-thumb{width:36px;height:36px;object-fit:cover;border-radius:8px;border:1px solid #eee}
+
+    .btn-edit{background:#111827;color:#fff;padding:6px 10px;border-radius:8px}
+    .btn-delete{background:#ef4444;color:#fff;padding:6px 10px;border-radius:8px}
+
+    .muted{color:#666;font-size:13px;margin-top:10px}
+    .small{font-size:13px;color:#555}
+
+    .topbar-right{display:flex;gap:10px}
+    .badge{background:#eef2ff;color:#4b0082;padding:6px 10px;border-radius:999px;font-weight:600}
+    .logout{background:#f59e0b;color:#fff}
+
+    /* custom sport */
+    #customSportWrap{display:none;margin-top:8px}
+
+    /* modal */
+    .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:50}
+    .modal-box{background:#fff;padding:20px;border-radius:14px;width:520px;max-width:92%}
+
+    @media(max-width:768px){
+      .wrap{flex-direction:column}
+      .sidebar{width:100%}
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Admin Panel — Sports Results</h1>
+  <div class="topbar-right">
+    <div class="badge" id="totalBadge">รายการเเข่งตอนนี้มี: 0</div>
+    <button id="openDashboard" class="logout">Preview</button>
+    <button id="logoutBtn" class="logout">Logout</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h3 class="small">เพิ่ม / แก้แมตช์</h3>
+
+    <label>วันที่</label>
+    <input id="dateInput" type="date">
+
+    <label>กีฬา</label>
+    <select id="sportInput">
+      <option value="Football">ฟุตบอล</option>
+      <option value="Basketball">บาสเกตบอล</option>
+      <option value="Tennis">เทนนิส</option>
+      <option value="Volleyball">วอลเลย์บอล</option>
+      <option value="Badminton">เเบดมินตัน</option>
+      <option value="Esports">อีสปอร์ต</option>
+      <option value="other">อื่นๆ</option>
+    </select>
+
+    <!-- custom sport -->
+    <div id="customSportWrap">
+      <label>ระบุชนิดกีฬา</label>
+      <input id="customSportInput" placeholder="เช่น Futsal, Table Tennis">
+    </div>
+
+    <label>Team A</label>
+    <input id="teamAInput">
+
+    <label>โลโก้ทีม A</label>
+    <input id="logoAInput" type="file" accept="image/*">
+
+    <label>Team B</label>
+    <input id="teamBInput">
+
+    <label>โลโก้ทีม B</label>
+    <input id="logoBInput" type="file" accept="image/*">
+
+    <label>คะแนน</label>
+    <div style="display:flex;gap:8px">
+      <input id="scoreA" type="number" placeholder="A">
+      <input id="scoreB" type="number" placeholder="B">
+    </div>
+
+    <label>สถานะ</label>
+    <select id="statusInput">
+      <option value="รอเเข่ง">upcoming</option>
+      <option value="กำลังเเข่ง">live</option>
+      <option value="จบการเเข่งขัน">finished</option>
+      <option value="เลื่อนออกไป">postponed</option>
+    </select>
+
+    <button class="btn-add" id="addBtn">เพิ่มแมตช์</button>
+
+    <div class="muted">กรุณากรอกข้อมูลให้ถูกต้อง</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <h2>รายการแข่งขัน</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>วันที่</th>
+          <th>กีฬา</th>
+          <th>ทีม A</th>
+          <th>ทีม B</th>
+          <th>ผล</th>
+          <th>สถานะ</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody id="matchesBody"></tbody>
+    </table>
+  </main>
+
+</div>
+
+<script>
+const STORE_KEY = "sr_matches_v1";
+
+function uid(){return Math.random().toString(36).slice(2,9);}
+function loadMatches(){return JSON.parse(localStorage.getItem(STORE_KEY)||"[]");}
+function saveMatches(d){localStorage.setItem(STORE_KEY,JSON.stringify(d));}
+
+const sportSelect=document.getElementById("sportInput");
+const customWrap=document.getElementById("customSportWrap");
+const customInput=document.getElementById("customSportInput");
+
+sportSelect.addEventListener("change",()=>{
+  customWrap.style.display = sportSelect.value==="other"?"block":"none";
+});
+
+document.getElementById("addBtn").onclick=()=>{
+  const sport = sportSelect.value==="other"
+    ? customInput.value || "อื่นๆ"
+    : sportSelect.value;
+
+  const match={
+    id:uid(),
+    date:dateInput.value,
+    sport,
+    teamA:teamAInput.value,
+    teamB:teamBInput.value,
+    scoreA:scoreA.value,
+    scoreB:scoreB.value,
+    status:statusInput.value
+  };
+
+  if(!match.teamA || !match.teamB){
+    alert("กรอกชื่อทีมให้ครบ");
+    return;
+  }
+
+  const list=loadMatches();
+  list.push(match);
+  saveMatches(list);
+  render();
+
+  teamAInput.value=teamBInput.value=scoreA.value=scoreB.value="";
+  customInput.value="";
+  customWrap.style.display="none";
+  sportSelect.value="Football";
+};
+
+function render(){
+  const body=document.getElementById("matchesBody");
+  body.innerHTML="";
+  const list=loadMatches();
+  list.forEach(m=>{
+    body.innerHTML+=`
+      <tr>
+        <td>${m.date||""}</td>
+        <td>${m.sport}</td>
+        <td>${m.teamA}</td>
+        <td>${m.teamB}</td>
+        <td>${m.scoreA||"-"} - ${m.scoreB||"-"}</td>
+        <td>${m.status}</td>
+        <td>
+          <button class="btn-delete" onclick="del('${m.id}')">ลบ</button>
+        </td>
+      </tr>`;
+  });
+  totalBadge.textContent="Matches: "+list.length;
+}
+
+function del(id){
+  if(confirm("ลบจริงไหม")){
+    saveMatches(loadMatches().filter(m=>m.id!==id));
+    render();
+  }
+}
+
+render();เระ
+</script>
+
+</body>
+</html>
