@@ -1,49 +1,46 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Login</title>
+  <meta charset="UTF-8">
+  <title>Sports Results</title>
   <style>
-    body { font-family: "Prompt", sans-serif; background: #f3f0ff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
-    .box{ background:#fff; padding:28px; border-radius:12px; box-shadow:0 6px 24px rgba(50,50,93,0.08); width:360px; text-align:center;}
-    h1{margin:0 0 14px;color:#4b0082;}
-    input{width:100%; padding:10px 12px; margin:8px 0; border-radius:8px; border:1px solid #ddd; font-size:16px;}
-    button{width:100%; padding:10px; margin-top:12px; border-radius:8px; border:none; background:#16a34a; color:white; font-weight:600; cursor:pointer;}
-    .note{font-size:13px;color:#666;margin-top:10px;}
+    body {
+      font-family: sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,.1);
+    }
+    a {
+      display: block;
+      margin: 15px 0;
+      padding: 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+    }
+    .view { background: #2563eb; }
+    .admin { background: #16a34a; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>Admin Login</h1>
-    <input id="username" placeholder="ชื่อผู้ใช้ (admin)" value="admin" />
-    <input id="password" type="password" placeholder="รหัสผ่าน" />
-    <button id="loginBtn">เข้าสู่ระบบ</button>
-    <div class="note">รหัสตัวอย่าง: <strong>password123</strong></div>
-  </div>
 
-  <script>
-    // รหัสผ่านตัวอย่าง (แบบง่าย ๆ สำหรับ demo). ในโปรดักชันอย่าเก็บแบบนี้
-    const DEMO_USER = "admin";
-    const DEMO_PASS = "password123";
+<div class="box">
+  <h1>🏆 Sports Results</h1>
+  <p>เลือกการใช้งาน</p>
 
-    document.getElementById("loginBtn").addEventListener("click", () => {
-      const u = document.getElementById("username").value.trim();
-      const p = document.getElementById("password").value;
-      if(u === DEMO_USER && p === DEMO_PASS) {
-        // เก็บสถานะล็อกอินชั่วคราวใน sessionStorage
-        sessionStorage.setItem("isAdmin", "1");
-        // ไปหน้า admin
-        location.href = "admin.html";
-      } else {
-        alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
-      }
-    });
+  <a href="dashboard.html" class="view">ดูผลการแข่งขัน</a>
+    <a href="indexnason.html" class="admin">เข้าสู่ระบบแอดมิน</a>
+</div>
 
-    // ถ้าแอดมินล็อกอินไว้แล้ว ให้ไปหน้า admin เลย
-    if(sessionStorage.getItem("isAdmin") === "1") {
-      location.href = "admin.html";
-    }
-  </script>
 </body>
 </html>
