@@ -221,10 +221,20 @@ function del(id){
     render();
   }
 }
+
+function del(id){
+  if(confirm("ลบจริงไหม")){
+    saveMatches(loadMatches().filter(m=>m.id!==id));
+    render();
+  }
+}
 document.getElementById("openDashboard").addEventListener("click", () => {
   window.open("dashboard.html", "_blank");
 });
-
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  sessionStorage.removeItem("isAdmin");
+  location.href = "index.html";
+});
 
 render();เระ
 </script>
