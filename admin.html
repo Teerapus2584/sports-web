@@ -118,12 +118,12 @@
       <option value="upcoming">รอเเข่ง</option>
       <option value="live">กำลังเเข่ง</option>
       <option value="finished">จบการเเข่ง</option>
-      <option value="postponed">เลือนการเเข่ง</option>
+      <option value="postponed">เลื่อนการเเข่ง</option>
     </select>
 
     <button class="btn-add" id="addBtn">เพิ่มแมตช์</button>
 
-    <div class="muted">ข้อมูลเก็บใน localStorage (เดโม)</div>
+    <div class="muted">ข้อมูลเก็บใน localStorage (เดโม) </div>
   </aside>
 
   <!-- MAIN -->
@@ -221,6 +221,10 @@ function del(id){
     render();
   }
 }
+document.getElementById("openDashboard").addEventListener("click", () => {
+  window.open("dashboard.html", "_blank");
+});
+
 
 render();เระ
 </script>
